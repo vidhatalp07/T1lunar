@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Lunar Vision | AI Lunar Image Enhancement</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at 50% 20%, #102b45 0%, #06111d 45%, #02060b 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1150px;
+            margin: auto;
+            padding: 35px 0 60px;
+        }
+
+        /* TOP BADGES */
+
+        .top-badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 35px;
+        }
+
+        .badge {
+            border: 1px solid #14cfff;
+            color: #19d9ff;
+            border-radius: 25px;
+            padding: 9px 18px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            background: rgba(0, 150, 255, 0.08);
+        }
+
+        .badge.green {
+            border-color: #29e6a2;
+            color: #48efb4;
+            background: rgba(30, 220, 150, 0.08);
+        }
+
+        /* HEADER */
+
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .title {
+            font-size: clamp(45px, 8vw, 88px);
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .title span {
+            color: #15d9ff;
+        }
+
+        .subtitle {
+            color: #18d9ff;
+            font-size: clamp(20px, 3vw, 34px);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            max-width: 850px;
+            margin: auto;
+            color: #e7edf5;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        /* BUTTONS */
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin: 35px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            padding: 17px 28px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.25s;
+        }
+
+        .upload-btn {
+            color: #00121d;
+            background: #16d9ef;
+            box-shadow: 0 0 25px rgba(22, 217, 239, 0.25);
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 35px rgba(22, 217, 239, 0.5);
+        }
+
+        .demo-btn {
+            color: white;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #47708d;
+        }
+
+        .demo-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* SCIENCE PANEL */
+
+        .science-panel {
+            background: rgba(20, 65, 95, 0.55);
+            border: 1px solid rgba(110, 180, 220, 0.35);
+            border-radius: 15px;
+            padding: 24px;
+            margin-top: 25px;
+            box-shadow: inset 0 0 30px rgba(0, 160, 255, 0.05);
+        }
+
+        .science-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            font-size: 19px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .shield {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            border: 1px solid #35e5b2;
+            color: #35e5b2;
+            font-size: 20px;
+        }
+
+        .ai-status {
+            margin-left: auto;
+            font-size: 12px;
+            padding: 7px 12px;
+            border-radius: 20px;
+            border: 1px solid #30e0b0;
+            color: #47efbd;
+        }
+
+        .science-text {
+            color: #c9d6e0;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* UPLOAD AREA */
+
+        .upload-area {
+            margin-top: 30px;
+            padding: 30px;
+            text-align: center;
+            border: 1px dashed #236d91;
+            border-radius: 15px;
+            background: rgba(0,0,0,0.15);
+            display: none;
+        }
+
+        .upload-area.active {
+            display: block;
+        }
+
+        #preview {
+            max-width: 100%;
+            max-height: 450px;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .filename {
+            margin-top: 15px;
+            color: #1bdcff;
+        }
+
+        /* FOOTER */
+
+        footer {
+            text-align: center;
+            margin-top: 45px;
+            color: #71899c;
+            font-size: 13px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 650px) {
+
+            .container {
+                width: 90%;
+                padding-top: 25px;
+            }
+
+            .top-badges {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .science-title {
+                flex-wrap: wrap;
+            }
+
+            .ai-status {
+                margin-left: 0;
+            }
+
+            .description {
+                font-size: 15px;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- TOP BADGES -->
+
+    <div class="top-badges">
+
+        <div class="badge">
+            ⚡ SPACE SCIENCE MISSION PROTOCOL
+        </div>
+
+        <div class="badge green">
+            🛡 100% NON-HALLUCINATIVE PHYSICAL RESTORATION
+        </div>
+
+    </div>
+
+
+    <!-- HEADER -->
+
+    <header>
+
+        <h1 class="title">
+            LUNAR <span>VISION</span>
+        </h1>
+
+        <div class="subtitle">
+            AI-Powered Low-Light Lunar Image Enhancement
+        </div>
+
+        <p class="description">
+            Enhance extremely dark lunar images, recover existing surface
+            details, reduce noise, and improve visibility for scientific
+            terrain analysis.
+        </p>
+
+    </header>
+
+
+    <!-- BUTTONS -->
+
+    <div class="buttons">
+
+        <label for="imageUpload" class="upload-btn"
+               style="padding:17px 28px;border-radius:12px;cursor:pointer;font-weight:bold;">
+            ↑ &nbsp; Upload Lunar Image
+        </label>
+
+        <input
+            type="file"
+            id="imageUpload"
+            accept="image/*"
+        >
+
+        <button class="demo-btn" onclick="loadDemo()">
+            ✨ &nbsp; Try Demo Image
+        </button>
+
+    </div>
+
+
+    <!-- SCIENTIFIC INTEGRITY -->
+
+    <section class="science-panel">
+
+        <div class="science-title">
+
+            <div class="shield">
+                ♢
+            </div>
+
+            <span>
+                Strict Scientific Integrity & Non-Hallucination Standard
+            </span>
+
+            <span class="ai-status">
+                AI-GEN SYNTHESIS: DISABLED
+            </span>
+
+        </div>
+
+        <p class="science-text">
+
+            The system relies on physics-grounded light-enhancement curve
+            estimation combined with adaptive multi-scale CLAHE and
+            edge-preserving non-local means denoising. It never generates
+            false craters, rocks, mountains, or synthetic textures.
+
+        </p>
+
+    </section>
+
+
+    <!-- IMAGE PREVIEW -->
+
+    <section class="upload-area" id="uploadArea">
+
+        <h2>🌙 Lunar Image Preview</h2>
+
+        <p class="filename" id="filename"></p>
+
+        <img id="preview" alt="Lunar image preview">
+
+    </section>
+
+
+    <footer>
+        Lunar Vision • Space Science Mission Protocol
+        <br>
+        AI-assisted lunar image enhancement
+    </footer>
+
+</div>
+
+
+<script>
+
+    const imageUpload = document.getElementById("imageUpload");
+    const preview = document.getElementById("preview");
+    const uploadArea = document.getElementById("uploadArea");
+    const filename = document.getElementById("filename");
+
+
+    imageUpload.addEventListener("change", function () {
+
+        const file = this.files[0];
+
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+
+            preview.src = event.target.result;
+
+            preview.style.display = "block";
+
+            filename.textContent =
+                "Selected image: " + file.name;
+
+            uploadArea.classList.add("active");
+
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+
+
+    function loadDemo() {
+
+        uploadArea.classList.add("active");
+
+        filename.textContent =
+            "Demo lunar image selected.";
+
+        /*
+         * Replace this URL with your own demo image.
+         */
+
+        preview.src =
+            "https://images.unsplash.com/photo-1532693322450-2cb5c511067d?auto=format&fit=crop&w=1200&q=80";
+
+        preview.style.display = "block";
+
+    }
+
+</script>
+
+</body>
+</html>
